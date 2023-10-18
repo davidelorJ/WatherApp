@@ -1,0 +1,59 @@
+﻿@page "/weather"
+@using System.Globalization;
+@using WatherApp.Models;
+@using WatherApp.Utilities;
+@inject HttpClient Client;
+<h3>Weather App</h3>
+
+<div class="input-group mb-3 mt-3">
+    <input class="form-control" type="text" @bind=city placeholder="City Name"/>
+
+    <div>
+        <button class="btn btn-outline-secondary" @onclick=GetWeather>Search</button>
+    </div>
+</div>
+
+@if(weatherData != null)
+{
+    <div class="text-center">
+        <p class="display-5">@city</p>
+        <p class="display-1">@weatherData.current.temperature_2m ºC</p>
+        <p class="display-6">@WeatherCode.Convert(weatherData.daily.weathercode[0])</p>
+
+    </div>
+    <div class="card-group">
+        @for(int i=0;i<weatherData.daily.time.Length;i++)
+        {
+             <WatherApp.Components.WeatherCard Day="@weatherData.daily.time[i]" tempMin="@weatherData.daily.temperature_2m_min[i]" tempMax="@weatherData.daily.temperature_2m_max[i]"
+             sumary="@WeatherCode.Convert(@weatherData.daily.weathercode[i])"></WatherApp.Components.WeatherCard>
+        }
+    </div>
+}
+
+<p>@lat</p>
+<p>@lon</p>
+
+@code {
+    string city = "";
+    float lat;
+    float lon;
+    WeatherModel? weatherData; // ? Puede encontrarse la ciudad o no
+
+    async Task GetWeather()
+    {
+        var cityData = await GetCityData();
+        lat = cityData.results[0].lat;
+        lon = cityData.results[0].lon;
+
+
+        CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("en-US");
+        weatherData = await Client.GetFromJsonAsync<WeatherModel>(EndPoints.GetWeatherEndPoint(lat,lon));
+        CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("es-es");
+    }
+
+    async Task<CityData> GetCityData()
+    {
+        var cityData = await Client.GetFromJsonAsync<CityData>(EndPoints.GetGeoApifyEndPoint(city));
+        return cityData;
+    }
+}
