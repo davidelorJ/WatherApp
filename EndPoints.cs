@@ -2,10 +2,10 @@
 {
     public class EndPoints
     {
-        public static string GetGeoApifyEndPoint(String cityName)
+        public static string GetGeoApifyEndPoint(String cityNameos)
         {
             //return $"https://api.geoapify.com/v1/geocode/search?text=Bilbao&format=json&apiKey=e432667586ff4858a6a1d098eb9b52cf";
-            return $"https://api.geoapify.com/v1/geocode/search?text={cityName}&format=json&apiKey={Config.GeoApifyKey}";
+            return $"https://api.geoapify.com/v1/geocode/search?text={cityNameos}&format=json&apiKey={Config.GeoApifyKey}";
         }
 
 

@@ -47,6 +47,7 @@
         public string sourcename { get; set; }
         public string attribution { get; set; }
         public string license { get; set; }
+    
         public string url { get; set; }
     }
 
